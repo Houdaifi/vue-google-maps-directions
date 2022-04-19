@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col justify-center items-center space-y-6 w-full">
-        <h1 class="text-4xl font-bold">F5atar ahssan chrikti</h1>
+        <!-- <h1 class="text-4xl font-bold">F5atar ahssan chrikti</h1> -->
         <h1 class="text-3xl font-semibold">Hope this will be useful</h1>
 
         <form class="space-y-8" @submit.prevent="AddToTable">
@@ -91,12 +91,6 @@ export default {
             workers:[],
             file_ready: false,
 
-            json_fields: {
-                'Complete name': 'name',
-                'Origin': 'origin',
-                'Destination': 'destination',
-                'Duration': 'duration',
-            },
             json_data: [],
             json_meta: [
                 [
@@ -147,11 +141,16 @@ export default {
                 // // pass the request to the route method
                 directionsService.route(request, function (result, status) {
                     if(status === "OK"){
-                        dt.push({name: worker.name, origin: worker.origin.name, destination: worker.destination.name, duration: result.routes[0].legs[0].duration.text});
+
+                        dt.push({Name: worker.name, Origin: worker.origin.name, 
+                                Destination: worker.destination.name,
+                                Distance: result.routes[0].legs[0].distance.text,
+                                Duration: result.routes[0].legs[0].duration.text,
+                                Mode: worker.travel_mode});
 
                         _this.file_ready = true;
                     }else{
-                        alert(status + " 3awda w9a3 xi ghalat, tri9ek 3amra chok!");
+                        alert(status + " of "+ worker.name +"!\nPlease choose others locations");
                     }
                 });
 

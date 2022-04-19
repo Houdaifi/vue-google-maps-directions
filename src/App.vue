@@ -11,7 +11,6 @@ export default {
   name: 'App',
   components: {
     Distance
-    
   }
 }
 </script>
