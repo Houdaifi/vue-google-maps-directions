@@ -17,25 +17,36 @@
             </div>
 
             <div class="mt-4">
-                <span class="text-gray-700">Travel Mode</span>
-                <div class="mt-2">
-                    <label class="inline-flex items-center">
-                        <input type="radio" class="form-radio" name="accountType" value="DRIVING" v-model="worker.travel_mode">
-                        <span class="ml-2">CAR</span>
-                    </label>
-                    <label class="inline-flex items-center ml-6">
-                        <input type="radio" class="form-radio" name="accountType" value="BICYCLING" v-model="worker.travel_mode">
-                        <span class="ml-2">Bike</span>
-                    </label>
-                    <label class="inline-flex items-center ml-6">
-                        <input type="radio" class="form-radio" name="accountType" value="WALKING" v-model="worker.travel_mode">
-                        <span class="ml-2">11</span>
-                    </label>
-                    <label class="inline-flex items-center ml-6">
-                        <input type="radio" class="form-radio" name="accountType" value="TRANSIT" v-model="worker.travel_mode">
-                        <span class="ml-2">TRANSIT</span>
-                    </label>
+                <span class="text-gray-700">Travel Mode:</span>
+                <div class="mt-2 flex space-x-4">
+
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox" value="DRIVING" v-model="travel_modes">
+                            <span class="ml-2">Car</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox" value='BICYCLING' v-model="travel_modes">
+                            <span class="ml-2">Bike</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox" value='WALKING' v-model="travel_modes">
+                            <span class="ml-2">Walking</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox" value='TRANSIT' v-model="travel_modes">
+                            <span class="ml-2">Transit</span>
+                        </label>
+                    </div>
+
                 </div>
+                
             </div>
 
             <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
@@ -87,8 +98,10 @@ export default {
     name: 'Distance',
     data(){
         return{
-            worker: {name: '', origin: '', destination: '', duration: '', travel_mode: ''},
+            worker: {name: '', origin: '', destination: '', duration: ''},
             workers:[],
+            travel_modes: ["DRIVING", "BICYCLING"],
+
             file_ready: false,
 
             json_data: [],
@@ -107,8 +120,8 @@ export default {
     },
     methods:{
         AddToTable(){
-            if(this.worker.name === "" || this.worker.origin === "" || this.worker.destination === "" || this.worker.travel_mode === "") return
-            this.workers.push({name: this.worker.name, origin: this.worker.origin, destination: this.worker.destination, duration: this.worker.duration, travel_mode: this.worker.travel_mode});
+            if(this.worker.name === "" || this.worker.origin === "" || this.worker.destination === "") return
+            this.workers.push({name: this.worker.name, origin: this.worker.origin, destination: this.worker.destination, duration: this.worker.duration});
         },
         remove_worker(worker_index){
             this.workers = this.workers.filter((w, key) => key !== worker_index);
@@ -122,7 +135,7 @@ export default {
         Generate_Excel(){
             var _this = this;
 
-            if(this.workers.length <= 0) return
+            if(this.workers.length <= 0 || this.travel_modes.length <= 0 ) return
 
             var directionsService = new this.google.maps.DirectionsService();
 
@@ -130,30 +143,36 @@ export default {
             var dt = [];
 
             _this.workers.forEach(worker => {
-                //create request
-                request = {
-                    origin: worker.origin.name,
-                    destination: worker.destination.name,
-                    travelMode: worker.travel_mode, //WALKING, BYCYCLING, TRANSIT
-                    unitSystem: this.google.maps.UnitSystem.IMPERIAL
-                }
 
-                // // pass the request to the route method
-                directionsService.route(request, function (result, status) {
-                    if(status === "OK"){
-
-                        dt.push({Name: worker.name, Origin: worker.origin.name, 
-                                Destination: worker.destination.name,
-                                Distance: result.routes[0].legs[0].distance.text,
-                                Duration: result.routes[0].legs[0].duration.text,
-                                Mode: worker.travel_mode});
-
-                        _this.file_ready = true;
-                    }else{
-                        alert(status + " of "+ worker.name +"!\nPlease choose others locations");
+                _this.travel_modes.forEach(mode => {
+                    
+                    //create request
+                    request = {
+                        origin: worker.origin.name,
+                        destination: worker.destination.name,
+                        travelMode: mode, //WALKING, BYCYCLING, TRANSIT
+                        unitSystem: this.google.maps.UnitSystem.IMPERIAL
                     }
-                });
 
+                    // // pass the request to the route method
+                    directionsService.route(request, function (result, status) {
+                        if(status === "OK"){
+
+                            let distance_in_kilimoters = parseInt(result.routes[0].legs[0].distance.text) * 1.6;
+
+                            dt.push({Name: worker.name, Origin: worker.origin.name, 
+                                    Destination: worker.destination.name,
+                                    Distance: distance_in_kilimoters + " Kilometers",
+                                    Duration: result.routes[0].legs[0].duration.text,
+                                    Mode: mode});
+
+                            _this.file_ready = true;
+                        }else{
+                            alert(status + " of "+ worker.name +"!\nPlease choose others locations");
+                        }
+                    });
+
+                });
             });
 
             _this.json_data = dt;
