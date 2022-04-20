@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col justify-center items-center space-y-6 w-full">
         <!-- <h1 class="text-4xl font-bold">F5atar ahssan chrikti</h1> -->
-        <h1 class="text-3xl font-semibold">Hope this will be useful</h1>
+        <h1 class="text-3xl  font-extralight">Calculate the distance and time between two locations</h1>
 
         <form class="space-y-8" @submit.prevent="AddToTable">
             <div class="">
@@ -148,8 +148,8 @@ export default {
                     
                     //create request
                     request = {
-                        origin: worker.origin.name,
-                        destination: worker.destination.name,
+                        origin: worker.origin.formatted_address,
+                        destination: worker.destination.formatted_address,
                         travelMode: mode, //WALKING, BYCYCLING, TRANSIT
                         unitSystem: this.google.maps.UnitSystem.IMPERIAL
                     }
