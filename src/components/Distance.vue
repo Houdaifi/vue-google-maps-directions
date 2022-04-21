@@ -15,7 +15,7 @@
                 <div>
                     <label for="origins" class="block text-sm font-medium text-gray-700"> Adresses de départ </label>
                     <div class="mt-1">
-                        <textarea rows="10" cols="50" v-model="worker.origin" class="p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border 
+                        <textarea v-model="worker.origin" class="p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border 
                         border-gray-300 rounded-md" placeholder="Rue Jean Parot, 42100 Saint-Étienne, France"></textarea>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                 <div>
                     <label for="destinations" class="block text-sm font-medium text-gray-700"> Adresse d'arrivée </label>
                     <div class="mt-1">
-                        <textarea rows="10" cols="50" v-model="worker.destination" class="p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border 
+                        <textarea v-model="worker.destination" class="p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border 
                         border-gray-300 rounded-md" placeholder="Rue de la Métare, 42100 Saint-Étienne, France"></textarea>
                     </div>
                 </div>
@@ -203,7 +203,7 @@ export default {
 
                                 dt.push({Name: "", Origin: origins[i], 
                                         Destination: destinations[i],
-                                        Distance: distance_in_kilimoters + " Kilometers",
+                                        Distance: (Math.round(distance_in_kilimoters * 100) / 100).toFixed(1) + " Kilometers",
                                         Duration: result.routes[0].legs[0].duration.text,
                                         Mode: mode});
 
@@ -227,8 +227,8 @@ export default {
                         
                         //create request
                         request = {
-                            origin: worker.origin.formatted_address,
-                            destination: worker.destination.formatted_address,
+                            origin: worker.origin.formatted_address.trim(),
+                            destination: worker.destination.formatted_address.trim(),
                             travelMode: mode, //WALKING, BYCYCLING, TRANSIT
                             unitSystem: this.google.maps.UnitSystem.IMPERIAL
                         }
@@ -239,9 +239,9 @@ export default {
 
                                 let distance_in_kilimoters = parseInt(result.routes[0].legs[0].distance.text) * 1.6;
 
-                                dt.push({Name: worker.name, Origin: worker.origin.formatted_address, 
-                                        Destination: worker.destination.formatted_address,
-                                        Distance: distance_in_kilimoters + " Kilometers",
+                                dt.push({Name: worker.name, Origin: worker.origin.formatted_address.trim(), 
+                                        Destination: worker.destination.formatted_address.trim(),
+                                        Distance: (Math.round(distance_in_kilimoters * 100) / 100).toFixed(1) + " Kilometers",
                                         Duration: result.routes[0].legs[0].duration.text,
                                         Mode: mode});
 
@@ -262,3 +262,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+textarea {
+  width: 500px;
+  height: 300px;
+}
+</style>
