@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="bg-gray-50 h-screen p-24">
+  <div id="app" class="bg-gray-50 p-24 min-h-screen">
     <distance/>
   </div>
 </template>
