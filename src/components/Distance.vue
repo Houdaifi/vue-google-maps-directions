@@ -14,7 +14,7 @@
             <form class="flex items-center justify-between space-x-12" @submit.prevent="Generate_Excel" v-if="is_various">
 
                     <div>
-                        <label for="origins" class="block text-sm font-medium text-gray-700"> <i v-if="arr[1]">{{arr[1].length}}</i> Adresses de départ </label>
+                        <label for="origins" class="block text-sm font-medium text-gray-700"> <i v-if="arr[1]">{{arr[1].length}}</i> Origins </label>
                         <div class="mt-1">
                             <textarea @input="Calculate_lines" v-model="worker.origin" class="p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border 
                             border-gray-300 rounded-md" placeholder="Rue Jean Parot, 42100 Saint-Étienne, France"></textarea>
@@ -22,7 +22,7 @@
                     </div>
 
                     <div>
-                        <label for="destinations" class="block text-sm font-medium text-gray-700"> <i v-if="arr[2]">{{arr[2].length}}</i>  Adresse d'arrivée </label>
+                        <label for="destinations" class="block text-sm font-medium text-gray-700"> <i v-if="arr[2]">{{arr[2].length}}</i>  Destinations </label>
                         <div class="mt-1">
                             <textarea @input="Calculate_lines" v-model="worker.destination" class="p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border 
                             border-gray-300 rounded-md" placeholder="Rue de la Métare, 42100 Saint-Étienne, France"></textarea>
@@ -82,22 +82,22 @@
 
             </form>
 
-            <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700 text-center" v-if="!is_various && workers.length > 0">
+            <table class="min-w-full divide-y divide-gray-200 table-fixed border dark:divide-gray-700 text-center" v-if="!is_various && workers.length > 0">
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
-                        <th>Name</th>
-                        <th>From</th>
-                        <th>To</th>
+                        <th class="border-r">Name</th>
+                        <th class="border-r">From</th>
+                        <th class="border-r">To</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     <tr v-for="(worker, index) in workers" :key="index">
-                        <td>{{worker.name}}</td>
-                        <td>{{worker.origin.name}}</td>
-                        <td>{{worker.destination.name}}</td>
+                        <td class="border-r">{{worker.name}}</td>
+                        <td class="border-r">{{worker.origin}}</td>
+                        <td class="border-r">{{worker.destination}}</td>
                         <td>
-                            <button class="text-red-500" @click="remove_worker(index)">x</button>
+                            <button class="inline-block h-4 w-4 rounded-full bg-red-600 text-white text-xs font-semibold" @click="remove_worker(index)">X</button>
                         </td>
                     </tr>
                 </tbody>
@@ -119,7 +119,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
 
-                Download Data {{dt.length}}
+                Download File with {{dt.length}} rows
             </export-excel>
 
         </div>
@@ -160,6 +160,7 @@ export default {
     methods:{
         AddToTable(){
             if(this.worker.name === "" || this.worker.origin === "" || this.worker.destination === "") return
+            console.log(this.worker)
             this.workers.push({name: this.worker.name, origin: this.worker.origin, destination: this.worker.destination});
         },
         remove_worker(worker_index){
