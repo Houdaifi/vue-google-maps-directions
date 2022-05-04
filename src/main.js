@@ -8,8 +8,8 @@ Vue.config.productionTip = false
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "AIzaSyBpUQXRK7mnSGBhFXO0wy6B0Pz8YPIhaIE",
-    libraries: "places",
+    key: process.env.VUE_APP_API_KEY,
+    libraries: process.env.VUE_APP_LIBRARIES,
   },
 });
 
