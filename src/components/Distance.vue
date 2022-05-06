@@ -160,7 +160,6 @@ export default {
     methods:{
         AddToTable(){
             if(this.worker.name === "" || this.worker.origin === "" || this.worker.destination === "") return
-            console.log(this.worker)
             this.workers.push({name: this.worker.name, origin: this.worker.origin, destination: this.worker.destination});
         },
         remove_worker(worker_index){
@@ -176,7 +175,7 @@ export default {
             let arr = [];
 
             for (const [key, value] of Object.entries(this.worker)) {
-                console.log(key);
+                key;
                 let v = value.split("\n");
                 arr.push((v.filter(Boolean)));
             }
@@ -245,7 +244,6 @@ export default {
 
             try {
                 await directionsService.route(request, function (result, status) {
-                    console.log(status)
                     if(status === "OK"){
                         let distance_in_kilimoters = parseInt(result.routes[0].legs[0].distance.text) * 1.6;
 
