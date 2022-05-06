@@ -4,7 +4,7 @@ A Vue app to calculate distance and time between two locations based on multiple
 
 ## Built with
 
-- Vue JS
+- Vue JS 
 - Tailwind CSS
 - Google Maps API
 - vue2-google-maps
