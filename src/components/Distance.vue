@@ -177,6 +177,7 @@ export default {
             for (const [key, value] of Object.entries(this.worker)) {
                 key;
                 let v = value.split("\n");
+                // To ignore NaN, Undefiend, boolean values or empty object
                 arr.push((v.filter(Boolean)));
             }
 
@@ -202,7 +203,7 @@ export default {
                             origin: origins[i].trim(),
                             destination: destinations[i].trim(),
                             travelMode: mode, //WALKING, BYCYCLING, TRANSIT
-                            unitSystem: this.google.maps.UnitSystem.IMPERIAL
+                            unitSystem: this.google.maps.UnitSystem.IMPERIAL,
                         }
 
                         // pass the request to the route method
@@ -219,36 +220,36 @@ export default {
 
                 for (const worker of _this.workers) {
                     for (const mode of _this.travel_modes) {
-                        
                         // create request
                         request = {
                             origin: worker.origin.trim(),
                             destination: worker.destination.trim(),
                             travelMode: mode, //WALKING, BYCYCLING, TRANSIT
-                            unitSystem: this.google.maps.UnitSystem.IMPERIAL
+                            unitSystem: this.google.maps.UnitSystem.IMPERIAL,
                         }
 
                         // pass the request to the route method
-                        await _this.get_directions_route(request, mode);
+                        await _this.get_directions_route(request, mode, worker.name);
                     }
 
                     _this.file_ready = true;
                 }
             }
-
             _this.json_data = _this.dt;
         },
-        async get_directions_route(request, mode){
+        async get_directions_route(request, mode, name=""){
             var _this = this;
             var directionsService = new _this.google.maps.DirectionsService();
 
             try {
                 await directionsService.route(request, function (result, status) {
                     if(status === "OK"){
+                        console.log(request)
+                        // Convert distance to km
                         let distance_in_kilimoters = parseInt(result.routes[0].legs[0].distance.text) * 1.6;
 
                         _this.dt.push({
-                            Name: "", 
+                            Name: name, 
                             Origin: request.origin, 
                             Destination: request.destination,
                             Distance: (Math.round(distance_in_kilimoters * 100) / 100).toFixed(1) + " Kilometers",
